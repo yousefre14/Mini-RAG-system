@@ -15,3 +15,9 @@ conda activate mini-rag-system
 conda install pip -y
 # Install dependencies
 pip install -r requirements.txt
+```
+## Setup
+1. Clone the repository:
+    ```bash
+    git clone
+    
