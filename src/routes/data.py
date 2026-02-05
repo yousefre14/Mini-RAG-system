@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, UploadFile, status
 import os
 from fastapi.responses import JSONResponse
-from helpers.config import get_settings, Settings
-from controllers import DataController, ProjectController, ProcessController
+from src.helpers.config import get_settings, Settings
+from src.controllers import DataController, ProjectController, ProcessController
 import aiofiles
-from models.enumerates.responseEnamurates import ResponseSignals
+from src.models.enumerates.responseEnamurates import ResponseSignals
 import logging
 from.schemas.data import processRequest
 
