@@ -1,6 +1,6 @@
 from .BaseController import BaseController
 from fastapi import UploadFile
-from models.enumerates.responseEnamurates import ResponseSignals
+from src.models.enumerates.responseEnamurates import ResponseSignals
 class DataController(BaseController):
 
     def __init__(self):

@@ -3,8 +3,8 @@ from .ProjectController import ProjectController
 import os
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders import PyMuPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from models.enumerates.Processingenum import ProcessingEnum
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from src.models.enumerates.Processingenum import ProcessingEnum
 
 
 class ProcessController(BaseController):
