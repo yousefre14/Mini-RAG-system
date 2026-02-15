@@ -20,4 +20,7 @@ pip install -r requirements.txt
 1. Clone the repository:
     ```bash
     git clone
-    
+
+```python -m uvicorn src.main:app --reload --reload-dir src
+
+source .venv/bin/activate
