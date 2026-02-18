@@ -26,8 +26,8 @@ async def upload_data(
     file: UploadFile,
     app_settings: Settings = Depends(get_settings)
 ):
-    project_model = ProjectModel(request.app.db_client)
-    project = await project_model.get_project_or_createone(project_id=project_id)
+    project_model = await ProjectModel.create_instance(request.app.db_client)
+    project =  project_model.get_project_or_createone(project_id=project_id)
 
     # Validate file
     is_valid, result_signal = DataController().validate_uploaded_file(file=file)
@@ -74,7 +74,7 @@ async def process_endpoint(
     chunk_size = process_request.chunk_size
     overlap_size = process_request.overlap_size
 
-    project_model = ProjectModel(request.app.db_client)
+    project_model = await ProjectModel.create_instance(request.app.db_client)
     project = await project_model.get_project_or_createone(project_id=project_id)
 
     process_controller = ProcessController(project_id=project_id)
@@ -104,7 +104,7 @@ async def process_endpoint(
     ]
 
     # Insert chunks into DB
-    chunk_model = Chunk_model(db_client=request.app.db_client)
+    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
     no_records_inserted = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
 
     return JSONResponse(
