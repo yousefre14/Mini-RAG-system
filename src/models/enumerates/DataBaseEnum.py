@@ -6,3 +6,4 @@ class DataBaseEnum(Enum):
     DOCUMENTS = "documents"
     EMBEDDINGS = "embeddings"
     RETRIEVALS = "retrievals"
+    COLLECTION_ASSET_NAME = "collection_assets"
