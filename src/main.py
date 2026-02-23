@@ -3,7 +3,11 @@ from src.routes import base, data
 from motor.motor_asyncio import AsyncIOMotorClient
 from src.helpers.config import Settings, get_settings
 
+
+
 app = FastAPI()
+
+
 @app.on_event("startup")
 async def startup_db_client():
     settings = get_settings()
@@ -15,6 +19,5 @@ async def startup_db_client():
 async def shutdown_db_client():
     app.mongo_conn.close()
 
-app.include_router(base.base_router)
-app.include_router(data.data_router)
-
+app.include_router(base.base_router)        # make sure base_router exists in base.py
+app.include_router(data.data_router)        # must match exactly `data_router` in data.py
