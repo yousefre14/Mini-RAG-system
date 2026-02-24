@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, status, Request
+from fastapi import APIRouter, Body, Depends, UploadFile, status, Request
 import os
 import logging
 import aiofiles
@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from src.helpers.config import get_settings, Settings
 from src.controllers import DataController, ProjectController, ProcessController
+from src.controllers.ProcessController import ProcessController
 from src.models.enumerates.responseEnamurates import ResponseSignals
 from src.routes.schemas.data import processRequest
 from src.models.ProjectModel import ProjectModel
@@ -76,7 +77,7 @@ async def upload_data(
         content={
             "signal": ResponseSignals.SUCCESS.value,
             "message": f"File '{file.filename}' uploaded successfully to project '{project_id}'.",
-            "file_id": str(asset_record.asset_id),  # use actual asset_id
+            "file_id":str(file.filename), # use actual asset_id
             "project_id": str(project_id)
         }
     )
@@ -86,7 +87,7 @@ async def upload_data(
 async def process_endpoint(
     request: Request,
     project_id: str,  # keep project_id as string
-    process_request: processRequest
+    process_request: processRequest = Body(default_factory=processRequest)
 ):
     chunk_size = process_request.chunk_size
     overlap_size = process_request.overlap_size
@@ -127,9 +128,10 @@ async def process_endpoint(
     for file_id in project_file_ids:
         file_content = process_controller.get_file_content(file_id=file_id)
         if not file_content:
-            logger.error(f"Failed to load content for file_id: {file_id} in project_id: {project_id}")
-            continue
-
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"message": "No files found for the specified project."}
+            )
         file_chunks = process_controller.process_file_content(
             file_content=file_content,
             file_id=file_id,
@@ -147,7 +149,7 @@ async def process_endpoint(
                 chunk_text=chunk.page_content,
                 chunk_metadata=chunk.metadata,
                 chunk_order=i + 1,
-                chunk_project_id=project._id
+                chunk_project_id=project.project_id
             )
             for i, chunk in enumerate(file_chunks)
         ]
