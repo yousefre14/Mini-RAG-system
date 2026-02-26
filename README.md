@@ -24,3 +24,6 @@ pip install -r requirements.txt
 ```python -m uvicorn src.main:app --reload --reload-dir src
 
 source .venv/bin/activate
+
+create an LLMFactory
+
