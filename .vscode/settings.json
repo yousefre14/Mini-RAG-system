@@ -1,3 +1,4 @@
 {
-    "workbench.externalBrowser": "Brave"
+    "workbench.externalBrowser": "Brave",
+    "python.languageServer": "Pylance"
 }
