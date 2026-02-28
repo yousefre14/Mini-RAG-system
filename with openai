@@ -1,0 +1,10 @@
+[33m6ceab1a[m[33m ([m[1;36mHEAD -> [m[1;32mproj--008[m[33m, [m[1;31morigin/proj--008[m[33m)[m vectordb
+[33m6a0dc25[m Vectordb Factory
+[33m811645f[m[33m ([m[1;32mproj-007[m[33m)[m added 1 file: README.md
+[33m9aa6acb[m  update readme
+[33m09a9c43[m LLMFactorty
+[33m12c1857[m LLMFactory
+[33m893ac9b[m create the LLMinterface
+[33m2d207a8[m update requirments with openai
+[33mc8c952f[m[33m ([m[1;32mproj-006[m[33m)[m debugging chunking
+[33mec878bc[m updating workflow

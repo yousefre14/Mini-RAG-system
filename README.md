@@ -26,4 +26,5 @@ pip install -r requirements.txt
 source .venv/bin/activate
 
 create an LLMFactory
+create a VectorDBFactory
 
