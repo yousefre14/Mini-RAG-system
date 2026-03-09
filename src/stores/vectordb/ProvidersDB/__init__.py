@@ -1,1 +1,1 @@
-from QdrantDB import QdrantDB
+from src.stores.vectordb.ProvidersDB.QdrantDB import QdrantDB

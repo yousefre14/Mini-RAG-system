@@ -1,6 +1,6 @@
 from .LLMenum import LLMenum
-from .providers.OpenAiProvider import OpenAiProvider
-from .providers.CohereProvider import CohereProvider
+from .Providers.OpenAiProvider import OpenAiProvider
+from .Providers.CohereProvider import CohereProvider
 
 class LLMProviderFactory:
     def __init__(self , config : dict):
