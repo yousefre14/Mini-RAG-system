@@ -2,6 +2,7 @@ from ..LLMinterface import LLminterface
 from ..LLMenum import CohereEnum , DocumentTypeEnum
 import cohere
 import logging
+from typing import List, Union
 
 
 class CohereProvider(LLminterface):
@@ -28,7 +29,10 @@ class CohereProvider(LLminterface):
         self.embedding_model_id = model_id
         self.embedding_size= embedding_size
 
-    def process_text(self, text :str):
+    def process_text(self, text):
+        if isinstance(text, list):
+             text = " ".join(text)
+
         return text[:self.default_input_max_characters].strip()
     
     def generate_text (self , prompt : str , chat_history: list = [], max_output_token: int=None,
@@ -69,7 +73,7 @@ class CohereProvider(LLminterface):
 
         response = self.client.embed(
             model=self.embedding_model_id,
-            text=[self.process_text(text)],
+            texts=[self.process_text(text)],
             input_type=input_type.value,
             embedding_types=["float"],
         )
