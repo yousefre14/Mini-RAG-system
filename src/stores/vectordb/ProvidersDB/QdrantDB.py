@@ -92,6 +92,24 @@ class QdrantDB(VectorDBInterface):
 
         return True    
     
-    def search_by_vector(self,collection_name: str, vector: list, limit: int= 5):
-        return self.client.search(collection_name=collection_name, 
-                                  query_vector=vector, limit=limit)
+    def search_by_vector(self, collection_name, vector, limit=5):
+
+        response = self.client.query_points(
+             collection_name=collection_name,
+              query=vector,
+              limit=limit
+    )
+
+        results = []
+
+        for point in response.points:
+            results.append({
+              "score": point.score,
+                "payload": point.payload
+        })
+
+        return results
+        
+            
+        print(self.client.get_collections())
+        
