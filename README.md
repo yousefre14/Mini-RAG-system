@@ -1,5 +1,10 @@
 # Mini-RAG-system
-
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)](https://docker.com)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=flat&logo=openai&logoColor=white)](https://openai.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Motor-47A248?style=flat&logo=mongodb&logoColor=white)](https://mongodb.com)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 A modular **Retrieval-Augmented Generation (RAG) backend** built with FastAPI, MongoDB, LangChain loaders/splitters, pluggable LLM providers, and a vector database layer.
 
 This project is designed to show a complete RAG pipeline—from document ingestion to semantic retrieval—with a clean separation between API routes, controllers, models, and provider factories.
