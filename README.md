@@ -23,21 +23,38 @@ This project is designed to show a complete RAG pipeline—from document ingesti
 
 ## Architecture overview
 
-```text
-Client
-  ↓
-FastAPI Routes
-  ├─ /api/v1/data  (upload + processing)
-  └─ /api/v1/nlp   (indexing + retrieval)
-  ↓
-Controllers
-  ├─ Data/Project/Process Controllers
-  └─ NLP Controller
-  ↓
-Storage + AI Backends
-  ├─ MongoDB (projects, assets, chunks metadata)
-  ├─ Vector DB (Qdrant provider)
-  └─ LLM Providers (OpenAI / Cohere)
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     CLIENT / POSTMAN                        │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ HTTP
+┌─────────────────────────▼───────────────────────────────────┐
+│                   FastAPI REST API                          │
+│          /upload  /process  /index  /search  /answer        │
+└────┬──────────────┬──────────────────────┬──────────────────┘
+     │              │                      │
+┌────▼────┐  ┌──────▼──────┐      ┌────────▼────────┐
+│  File   │  │   Data      │      │   RAG Query     │
+│ Upload  │  │  Pipeline   │      │    Engine       │
+│ Handler │  │ (Chunking)  │      │                 │
+└────┬────┘  └──────┬──────┘      └────────┬────────┘
+     │              │                      │
+     │       ┌──────▼──────┐      ┌────────▼────────┐
+     │       │  LLM Factory│      │  VectorDB       │
+     │       │  Interface  │      │  Factory        │
+     │       │             │      │  Interface      │
+     │       │ ┌─────────┐ │      │ ┌─────────────┐ │
+     │       │ │ OpenAI  │ │      │ │   ChromaDB  │ │
+     │       │ │ Ollama  │ │      │ │   Qdrant    │ │
+     │       │ │ ...     │ │      │ │   ...       │ │
+     │       │ └─────────┘ │      │ └─────────────┘ │
+     │       └─────────────┘      └─────────────────┘
+     │
+┌────▼────────────────────────────────────────────────┐
+│                   MongoDB (Motor)                    │
+│         Projects │ Files │ Chunks │ Indexes          │
+└──────────────────────────────────────────────────────┘
+     All services containerized via Docker Compose
 ```
 
 ### Request lifecycle (pipeline)
@@ -61,30 +78,36 @@ Storage + AI Backends
 
 ## Repository structure
 
-```text
-src/
-  main.py                       # App startup/shutdown + dependency wiring
-  routes/
-    base.py                     # Welcome route
-    data.py                     # Upload + process routes
-    nlp.py                      # Index + search routes
-    schemas/                    # Pydantic request schemas
-  controllers/
-    Data_Controller.py
-    ProjectController.py
-    ProcessController.py        # File loading + chunking
-    nlp_controller.py           # Embedding/index/search orchestration
-  stores/
-    llm/                        # LLM provider interfaces + factory
-    vectordb/                   # Vector DB interfaces + factory
-  models/                       # DB schemas + models
-  assets/
-    files/                      # Stored uploaded files
-    vectordb/                   # Local vector DB data
-docker/
-  docker-compose.yml            # MongoDB service
 ```
-
+Mini-RAG-system/
+│
+├── src/
+│   ├── models/              # MongoDB schemas & data models
+│   ├── controllers/         # Route handlers (upload, process, search)
+│   ├── helpers/
+│   │   ├── llm/
+│   │   │   ├── LLMInterface.py      # Abstract LLM contract
+│   │   │   ├── LLMFactory.py        # Provider resolver
+│   │   │   ├── providers/
+│   │   │   │   ├── OpenAIProvider.py
+│   │   │   │   └── OllamaProvider.py
+│   │   └── vectordb/
+│   │       ├── VectorDBInterface.py  # Abstract VectorDB contract
+│   │       ├── VectorDBFactory.py    # Engine resolver
+│   │       └── providers/
+│   │           ├── ChromaDBProvider.py
+│   │           └── QdrantProvider.py
+│   ├── routes/              # FastAPI route definitions
+│   └── main.py              # App entrypoint
+│
+├── docker/
+│   ├── docker-compose.yml   # MongoDB + App orchestration
+│   └── .env.example
+│
+├── .env                     # Environment variables
+├── requirements.txt
+└── README.md
+```
 ---
 
 ## Prerequisites
@@ -127,38 +150,6 @@ docker compose -f docker/docker-compose.yml up -d
 
 ### 5) Configure environment variables
 
-Create a `.env` file in the project root:
-
-```env
-APP_NAME=Mini-RAG-system
-APP_VERSION=1.0.0
-
-FILE_ALLOWED_TYPES=["application/pdf","text/plain"]
-FILE_MAX_SIZE=10485760
-FILE_DEFAULT_CHUNK_SIZE=1048576
-
-MongoDB_URI=mongodb://<username>:<password>@localhost:27017
-MongoDB_DATABASE=mini_rag
-
-GENERATION_BACKEND=openai
-EMBEDDING_BACKEND=openai
-
-OPENAI_API_KEY=your_openai_key
-OPENAI_API_URL=
-COHERE_API_KEY=
-
-GENERATION_MODEL_ID=gpt-4o-mini
-EMBEDDING_MODEL_ID=text-embedding-3-small
-EMBEDDING_MODEL_SIZE=1536
-INPUT_DAFAULT_MAX_CHARACTERS=4000
-GENERATION_DAFAULT_MAX_TOKENS=500
-GENERATION_DAFAULT_TEMPERATURE=0.2
-
-VECTOR_DB_BACKEND=qdrant
-VECTOR_DB_PATH=src/assets/vectordb/qdrant_db
-VECTOR_DB_DISTANCE_METHOD=Cosine
-VECTOR_DB_MODEL_ID=mini-rag
-```
 
 ### 6) Run the API
 
